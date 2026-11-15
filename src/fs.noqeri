@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: Apache-2.0
+module noqeri.fs
+
+extern function fsReadText(path: string): string
+extern function fsWriteText(path: string, data: string): bool
+extern function fsExists(path: string): bool
+extern function fsRemove(path: string): bool
+extern function fsList(path: string): string
+extern function fsLastStatus(): int
+
+export function fsSafeRelativePath(value: []u8): bool {
+    if len(value) == 0 as usize || value[0] == 47 as u8 { return false }
+    let start: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i <= len(value) {
+        if i == len(value) || value[i] == 47 as u8 {
+            let count: usize = i - start
+            if count == 0 as usize || count == 1 as usize && value[start] == 46 as u8 { return false }
+            if count == 2 as usize && value[start] == 46 as u8 && value[start + 1 as usize] == 46 as u8 { return false }
+            start = i + 1 as usize
+        } else if value[i] == 0 as u8 || value[i] == 92 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+export function fsPathHasTraversal(value: []u8): bool {
+    if len(value) == 0 as usize { return true }
+    let i: usize = 0 as usize
+    while i + 1 as usize < len(value) {
+        if value[i] == 46 as u8 && value[i + 1 as usize] == 46 as u8 { return true }
+        i = i + 1 as usize
+    }
+    return false
+}
+
+export function fsRead(path: string): string {
+    return fsReadText(path)
+}
+
+export function fsWrite(path: string, data: string): bool {
+    if len(path) == 0 as usize || len(data) > 8388608 as usize { return false }
+    return fsWriteText(path, data)
+}
+
+export function fsPresent(path: string): bool {
+    if len(path) == 0 as usize { return false }
+    return fsExists(path)
+}
+
+export function fsStatusOk(): bool { return fsLastStatus() == 0 }
+

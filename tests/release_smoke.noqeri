@@ -1,0 +1,13 @@
+import "../src/fs.noqeri"
+
+function require(ok: bool): void {
+    if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) }
+}
+
+let safe = [115 as u8, 114 as u8, 99 as u8, 47 as u8, 109 as u8, 97 as u8, 105 as u8, 110 as u8]
+let unsafe = [46 as u8, 46 as u8, 47 as u8, 120 as u8]
+require(fsSafeRelativePath(safe))
+require(!fsSafeRelativePath(unsafe))
+require(fsPathHasTraversal(unsafe))
+print("noqeri-fs package tests: OK")
+
