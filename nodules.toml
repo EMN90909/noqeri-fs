@@ -1,0 +1,9 @@
+[nodule]
+format = "ndl-1"
+name = "noqeri/fs"
+version = "1.0.0"
+entry = "src/fs.noqeri"
+kind = "library"
+target = "portable"
+license = "Apache-2.0"
+description = "Official noqeri-fs package for the Noqeri ecosystem"
